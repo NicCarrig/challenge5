@@ -5,8 +5,10 @@ function loadTasks(){
     //set current day and populate the time-blocks with the descriptions
     //if the date in localstorage is different than current date, wipe the saved descriptions
     var todayDate = moment().format("dddd, MMMM Do");
-    var savedDesc = localStorage.getItem("tasks");
-    if(savedDesc === null){
+    tasks = JSON.parse(localStorage.getItem("tasks"));
+
+    if(tasks === null){
+        tasks = [];
         tasks[0] = todayDate;
         console.log("null if-else");
         saveDesc();
@@ -16,9 +18,8 @@ function loadTasks(){
         console.log("no match if-else");
         clearDesc();
     }
-    $("#currentDay").textContent = todayDate;
-    console.log(todayDate);
-    console.log(tasks[0]);
+    //document.getElementById("currentDay").innerHTML = todayDate;
+    $("#currentDay").text(todayDate);
 }
 function saveDesc(){
     localStorage.setItem("tasks", JSON.stringify(tasks));
