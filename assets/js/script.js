@@ -5,23 +5,23 @@ function loadTasks(){
     //set current day and populate the time-blocks with the descriptions
     //if the date in localstorage is different than current date, wipe the saved descriptions
     var todayDate = moment().format("dddd, MMMM Do");
-    tasks = JSON.parse(localStorage.getItem("tasks"));
+    var checkTasks = JSON.parse(localStorage.getItem("tasks"));
 
-    if(tasks === null){
-        tasks = [];
+    if(checkTasks === null){
         tasks[0] = todayDate;
-        console.log("null if-else");
         saveDesc();
+        makeTaskArray();
+        loadTasks();
     }
-    else if(todayDate != tasks[0]){
-        //clears all descriptions if the dates are different (presumably from a previous day)
-        console.log("no match if-else");
+    else if (todayDate != tasks[0]){
         clearDesc();
+        loadTasks();
     }
-    //document.getElementById("currentDay").innerHTML = todayDate;
+
     $("#currentDay").text(todayDate);
 }
 function saveDesc(){
+    // console.log(tasks);
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 function clearDesc(){
@@ -32,16 +32,53 @@ function clearDesc(){
 function checkTime(){
     var currentTime = moment().hour();
 }
+function makeTaskArray(){
+    console.log("make array function");
+    $.each($(".time-block"), function(){
+        var blockId = ($(this).attr("id"));
+        var blockDesc = ($(this).find(".description").val());
+        var blockObj = {
+            time: blockId,
+            desc: blockDesc
+        };
+        tasks.push(blockObj);
+    })
+    saveDesc();
+}
+
+function updateDesc(text, timeSlot){
+    //finds the timeslot of the button clicked and then updates that description
+
+    saveDesc();
+}
+
+function findTimeslot(){
+    //returns index of button clicked so the correct element in the array can be changed
+    var index;
+}
 
 $(".time-block").on("click", "button", function(){
 
     var text = $(this).siblings(".description").val();
-    console.log(text);
     var timeSlot = $(this).parent().attr("id");
-    console.log(timeSlot);
+
+    updateDesc(text, timeSlot);
 
 });
+
+// $.each($(".time-block"), function(){
+//     var blockId = ($(this).attr("id"));
+//     var blockDesc = ($(this).find(".description").val());
+//     var blockObj = {
+//         time: blockId,
+//         desc: blockDesc
+//     };
+//     tasks.push(blockObj);
+// })
+// localStorage.setItem("tasks", JSON.stringify(tasks));
 
 var time = moment().hour();
 console.log(time);
 loadTasks();
+console.log(tasks);
+// saveDesc();
