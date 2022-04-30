@@ -56,7 +56,7 @@ function updateDesc(text, timeSlot){
     //finds the timeslot of the button clicked and then updates that description
     var index = findTimeslot(timeSlot);
     tasks[index].desc = text;
-    console.log(text +" : "+ timeSlot);
+    // console.log(text +" : "+ timeSlot);
     
     var idString = "#" + timeSlot + " .description";
     $(idString).text(text);
@@ -86,13 +86,32 @@ $(".time-block").on("click", "button", function(){
 });
 
 
-function checkTime(){
+function checkTime(blockEl){
     var currentTime = moment().hour();
+    var blockTime = parseInt($(blockEl).attr("id").replace("hour",""));
+
+    $(blockEl).removeClass("past present future");
+    if(currentTime > blockTime){
+        $(blockEl).addClass("past");
+    }
+    else if(currentTime === blockTime){
+        $(blockEl).addClass("present");
+    }
+    else{
+        $(blockEl).addClass("future");
+    }
 }
 
 
-var time = moment().hour();
-console.log(time);
+setInterval(function(){
+    $(".time-block").each(function(index, el){
+        checkTime(el);
+    })
+}, (1000 * 60) * 10);
+
+$(".time-block").each(function(index, el){
+    checkTime(el);
+})
 loadTasks();
-console.log(tasks);
+
 // saveDesc();
